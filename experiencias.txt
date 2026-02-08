@@ -1,0 +1,6 @@
+Al momento de codificar este programa ya tenía la idea en mente de como realizarlo, pese a que nunca he programado en C, el hecho de utilizar C++ previamente fue de mucha ayuda.
+Teniendo los diseños de los autómatas, realizar la transición de algoritmo a código no fue tan difícil. Sin embargo, al momento de integrar el autómata validador de números decimales,
+pude darme cuenta que su secuencia no estaba del todo correcta, ya que del Estado A al estado B debía esperar una entrada ya sea [-, +] o ún digito del 0-9, llevandolo a código no es
+del todo correcto ya que si del Estado A se espera una entrada válida, dependiendo de lo que el usuario introduzca, debe transicionar a un estado diferente, ya sea B o C, entonces 
+tuvimos que realizar un pequeño cambio en el diagrama para poder obtener el código correcto. Lo más trabajoso de esto fue entender algunas reglas y sintaxis del lenguaje, ya que como 
+mencioné previamente, no he trabajado nunca con C, pero ha servido de aprendizaje para el futuro.

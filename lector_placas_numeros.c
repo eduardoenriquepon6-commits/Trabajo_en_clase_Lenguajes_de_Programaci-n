@@ -12,8 +12,8 @@
 //Funciones
 
 void leer_archivo(int fd, char *buffer_salida);
-int es_decimal(const char *raw_data);
-int leer_placa(const char *raw_data);
+int es_decimal(const char *cadena);
+int leer_placa(const char *cadena);
 
 int main() {
 
@@ -53,41 +53,41 @@ int main() {
 void leer_archivo(int fd, char *buffer_salida) {
 
     ssize_t bytes_leidos;
-    int index = 0;
+    int indice = 0;
     char byte_temp;
 
-    while ((bytes_leidos = read(fd, &byte_temp, 1)) > 0 && index < MAX_BUFFER - 1) {
+    while ((bytes_leidos = read(fd, &byte_temp, 1)) > 0 && indice < MAX_BUFFER - 1) {
         
-        buffer_salida[index++] = byte_temp;
+        buffer_salida[indice++] = byte_temp;
 
     }
 
-    buffer_salida[index] = '\0';
+    buffer_salida[indice] = '\0';
     close(fd);
 
 }
 
-int es_decimal(const char *raw_data) {
+int es_decimal(const char *cadena) {
 
     int contador = 0;
-    int fase = 0;
-    size_t longitud = strlen(raw_data);
+    int estado = 0;
+    size_t longitud = strlen(cadena);
 
     for (size_t i = 0; i < longitud; i++) {
 
-        char c = raw_data[i];
+        char c = cadena[i];
 
-        switch (fase) {
+        switch (estado) {
 
             case 0: // Inicio
 
                 if (c == '+' || c == '-') {
 
-                    fase = 1;
+                    estado = 1;
 
                 } else if (c >= '0' && c <= '9') {
 
-                    fase = 2;
+                    estado = 2;
 
                 }
 
@@ -97,11 +97,11 @@ int es_decimal(const char *raw_data) {
 
                 if (c >= '0' && c <= '9') {
 
-                    fase = 2;
+                    estado = 2;
 
                 } else { 
 
-                    fase = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -112,15 +112,15 @@ int es_decimal(const char *raw_data) {
 
                 if (c >= '0' && c <= '9') {
 
-                    fase = 2;
+                    estado = 2;
 
                 } else if (c == '.') {
 
-                    fase = 3;
+                    estado = 3;
 
                 } else { 
 
-                    fase = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -131,11 +131,11 @@ int es_decimal(const char *raw_data) {
 
                 if (c >= '0' && c <= '9') {
 
-                    fase = 4;
+                    estado = 4;
 
                 } else { 
 
-                    fase = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -146,12 +146,12 @@ int es_decimal(const char *raw_data) {
 
                 if (c >= '0' && c <= '9') {
 
-                    fase = 4;
+                    estado = 4;
 
                 } else {
 
                     contador++;
-                    fase = 0;
+                    estado = 0;
                     i--; 
 
                 }
@@ -162,7 +162,7 @@ int es_decimal(const char *raw_data) {
 
     }
 
-    if (fase == 4) {
+    if (estado == 4) {
 
         contador++;
 
@@ -172,23 +172,23 @@ int es_decimal(const char *raw_data) {
 
 }
 
-int leer_placa(const char *raw_data) {
+int leer_placa(const char *cadena) {
 
     int hallazgos = 0;
-    int step = 0;
-    size_t len = strlen(raw_data);
+    int estado = 0;
+    size_t len = strlen(cadena);
 
     for (size_t i = 0; i < len; i++) {
 
-        char token = raw_data[i];
+        char simbolo = cadena[i];
 
-        switch (step) {
+        switch (estado) {
 
             case 0: // Letra 1
 
-                if (token >= 'A' && token <= 'Z') {
+                if (simbolo >= 'A' && simbolo <= 'Z') {
 
-                    step = 1;
+                    estado = 1;
 
                 }
 
@@ -196,13 +196,13 @@ int leer_placa(const char *raw_data) {
 
             case 1: // Letra 2
 
-                if (token >= 'A' && token <= 'Z') {
+                if (simbolo >= 'A' && simbolo <= 'Z') {
 
-                    step = 2;
+                    estado = 2;
 
                 } else { 
 
-                    step = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -211,13 +211,13 @@ int leer_placa(const char *raw_data) {
 
             case 2: // Separador (- o *)
 
-                if (token == '-' || token == '*') {
+                if (simbolo == '-' || simbolo == '*') {
 
-                    step = 3;
+                    estado = 3;
 
                 } else { 
 
-                    step = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -225,13 +225,13 @@ int leer_placa(const char *raw_data) {
                 break;
 
             case 3: // Digito 1
-                if (token >= '0' && token <= '9') {
+                if (simbolo >= '0' && simbolo <= '9') {
 
-                    step = 4;
+                    estado = 4;
 
                 } else { 
 
-                    step = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -240,13 +240,13 @@ int leer_placa(const char *raw_data) {
 
             case 4: // Digito 2
 
-                if (token >= '0' && token <= '9') {
+                if (simbolo >= '0' && simbolo <= '9') {
 
-                    step = 5;
+                    estado = 5;
 
                 } else { 
 
-                    step = 0; 
+                    estado = 0; 
                     i--; 
 
                 }
@@ -255,14 +255,14 @@ int leer_placa(const char *raw_data) {
 
             case 5: // Digito 3 (Aceptación)
 
-                if (token >= '0' && token <= '9') {
+                if (simbolo >= '0' && simbolo <= '9') {
 
                     hallazgos++;
-                    step = 0;
+                    estado = 0;
 
                 } else {
 
-                    step = 0;
+                    estado = 0;
                     i--;
 
                 }
