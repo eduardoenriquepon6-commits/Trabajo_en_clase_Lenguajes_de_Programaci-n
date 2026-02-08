@@ -1,0 +1,1 @@
+Probando el lector de archivos y los automatas, -1.231 +10.2 AA-000 JK-567B 8.0, HS-2B22  
